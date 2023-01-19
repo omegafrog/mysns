@@ -2,6 +2,7 @@ const Router = require('@koa/router');
 const router = new Router();
 const multer = require('@koa/multer');
 const path = require('path');
+const {verify} = require('./middleware/jwt');
 const upload = multer({
     dest: path.resolve(__dirname, '../', 'storage')
 });
@@ -10,9 +11,10 @@ router.get('/', require('./web/controller').home);
 
 router.get('/page/:content', require('./web/controller').content);
 
-router.get('/user/:id', require('./api/user/controller').register);
+router.post('/user/register', require('./api/user/controller').register);
+router.post('/user/login', require('./api/user/controller').login);
 
-router.get('/feed', require('./api/feed/controller').list);
+router.get('/feed', verify, require('./api/feed/controller').list);
 router.post('/feed', require('./api/feed/controller').write);
 router.put('/feed/:id', require('./api/feed/controller').update);
 router.delete('/feed/:id', require('./api/feed/controller').delete);
